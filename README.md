@@ -1,74 +1,107 @@
-# 🎬 Movie Watchlist Project
+🎬 Movie Watchlist App
+A web application to search movies, save them to a watchlist, and manage them with real-time updates.
+🎯 Features
 
-A sleek and interactive movie search and watchlist app that allows users to discover movies and curate their own personal watchlist in real time.
+Search Movies: Search TMDB database for any movie
+Add to Watchlist: Save movies to personal watchlist (real-time sync)
+Filter by Rating: Filter watchlist by minimum rating
+Sort by Rating: Sort movies by rating (high to low)
+Random Movie: Pick a random movie from watchlist
+Sticky Sidebar: Always visible watchlist while searching
+Real-time Updates: Changes sync instantly across tabs
 
-## ✨ Core Features
+🛠 Tech Stack
 
-### 🔍 Live Movie Search
-- Search movies using the **OMDb API**
-- Fetch results dynamically as the user types or on search click
-- Fast and responsive results display
+Frontend: React + React Router
+Database: Supabase (PostgreSQL)
+API: TMDB (The Movie Database)
+Hosting: Vercel
+Styling: CSS (simple, no framework)
 
-### 🎯 Watchlist Toggle
-- Add or remove movies from your watchlist with a single click
-- Instant UI updates for smooth user experience
+📋 Project Structure
+src/
+├── components/
+│   ├── SearchBar.jsx
+│   ├── MovieCard.jsx
+│   ├── MovieGrid.jsx
+│   ├── WatchlistSidebar.jsx
+│   ├── RatingFilter.jsx
+│   └── LoadingSpinner.jsx
+├── pages/
+│   ├── Home.jsx
+│   └── Watchlist.jsx
+├── services/
+│   ├── tmdbService.js
+│   └── supabaseService.js
+├── hooks/
+│   ├── useWatchlist.js
+│   └── useMovies.js
+├── config/
+│   └── supabaseClient.js
+├── App.jsx
+└── App.css
+🚀 Setup Instructions
+1. Clone & Install
+bashgit clone <your-repo>
+cd movie-watchlist
+npm install @supabase/supabase-js react-router-dom
+2. Environment Variables
+Create .env.local:
+REACT_APP_SUPABASE_URL=your_supabase_url
+REACT_APP_SUPABASE_ANON_KEY=your_anon_key
+REACT_APP_TMDB_API_KEY=your_tmdb_api_key
+3. Get API Keys
 
-### 📭 Empty States
-- Clean UI when:
-  - No movies are found
-  - Watchlist is empty
+Supabase: https://supabase.com → Create project → Copy keys
+TMDB: https://www.themoviedb.org/settings/api → Get API key
 
-### 🎨 Modern UI
-- Dark theme inspired by **Disney+ / HBO Max**
-- Sticky sidebar for saved movies
-- Smooth and intuitive layout
+4. Supabase Setup
+In Supabase SQL Editor, run:
+sqlCREATE TABLE watchlist (
+  id BIGSERIAL PRIMARY KEY,
+  movie_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  poster_url TEXT,
+  release_date TEXT,
+  overview TEXT,
+  rating NUMERIC(3,1),
+  genres TEXT,
+  runtime INTEGER,
+  director TEXT,
+  cast TEXT,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-### 🎲 Optional Feature
-- **Random Movie Night**
-  - Picks a random movie from your watchlist
-  - Perfect for indecisive days 😄
+ALTER PUBLICATION supabase_realtime ADD TABLE watchlist;
+Enable RLS + allow public access.
+5. Run Locally
+bashnpm start
+📲 Deployment (Vercel)
 
----
+Push to GitHub
+Connect repo to Vercel
+Add environment variables in Vercel dashboard
+Deploy
 
-## 🌐 APIs Used
+🎓 Learning Outcomes
 
-- 🎥 **OMDb API**  
-  https://www.omdbapi.com/
+React Hooks (useState, useEffect, custom hooks)
+API integration (fetch, async/await)
+Array methods (filter, sort, map)
+React Router for navigation
+Real-time database synchronization
+State management
 
-- 🍿 **TMDB API** (for extended data - optional)  
-  https://developer.themoviedb.org/docs/getting-started
+📅 Milestones
 
-- 📺 **Watchmode API** (for streaming availability - optional)  
-  https://api.watchmode.com/
+M1 (23 Mar): Setup & Planning ✓
+M2 (1 Apr): API Integration
+M3 (8 Apr): Core Features
+M4 (10 Apr): Deploy & Finalize
 
----
+⚠️ Notes
 
-## 🛠️ Tech Stack
-
-- **Frontend:** React.js
-- **Build Tool:** Vite
-- **Styling:** CSS / Tailwind CSS (update if needed)
-- **State Management:** React Hooks (useState, useEffect)
-
----
-
-## 📂 Project Structure
-The-Movie-Watchlist-Project/
-│
-├── node_modules/          # Installed dependencies
-├── public/                # Static assets
-│
-├── src/                   # Main source code
-│   ├── assets/            # Images / icons
-│   ├── App.jsx            # Root component
-│   ├── App.css            # App styles
-│   ├── index.css          # Global styles
-│   ├── main.jsx           # Entry point
-│
-├── .gitignore             # Files ignored by git
-├── index.html             # HTML template
-├── package.json           # Project metadata & scripts
-├── package-lock.json      # Dependency lock file
-├── vite.config.js         # Vite configuration
-├── eslint.config.js       # ESLint config
-├── README.md              # Project documentation
+No backend server - Supabase handles all DB operations
+Real-time updates via Supabase listeners
+Array HOFs required for filtering/sorting (no loops)
+Shared watchlist - all users see the same data
