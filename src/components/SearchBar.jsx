@@ -1,18 +1,25 @@
-import { useState } from "react";
-
-function SearchBar({ onSearch }) {
-  const [query, setQuery] = useState("");
+function SearchBar({ query, onQueryChange, onSearch, isLoading }) {
+  const trimmedQuery = query.trim();
 
   return (
-    <div>
+    <div className="search-bar">
       <input
         type="text"
         placeholder="Search movies..."
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => onQueryChange(e.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && trimmedQuery) {
+            onSearch();
+          }
+        }}
       />
 
-      <button onClick={() => onSearch(query)}>
+      <button
+        className="primary-button"
+        onClick={onSearch}
+        disabled={!trimmedQuery || isLoading}
+      >
         Search
       </button>
     </div>
