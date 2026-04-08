@@ -2,11 +2,12 @@ function MovieCard({ movie, isFavorite, onToggleFavorite }) {
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "";
+  const posterAltText = movie.title ? `${movie.title} poster` : "Movie poster";
 
   return (
     <div className={`card ${isFavorite ? "favorite" : ""}`}>
       {posterUrl ? (
-        <img src={posterUrl} alt={`${movie.title} poster`} />
+        <img src={posterUrl} alt={posterAltText} />
       ) : (
         <div className="poster-placeholder">No poster</div>
       )}
