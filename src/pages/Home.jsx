@@ -4,7 +4,7 @@ import MovieCard from "../components/MovieCard";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
-const getDateValue = (value) => {
+const getReleaseDateTimestamp = (value) => {
   const parsed = Date.parse(value ?? "");
   return Number.isNaN(parsed) ? 0 : parsed;
 };
@@ -84,10 +84,16 @@ function Home() {
         return (b.title ?? "").localeCompare(a.title ?? "");
       }
       if (sortOption === "date-desc") {
-        return getDateValue(b.release_date) - getDateValue(a.release_date);
+        return (
+          getReleaseDateTimestamp(b.release_date) -
+          getReleaseDateTimestamp(a.release_date)
+        );
       }
       if (sortOption === "date-asc") {
-        return getDateValue(a.release_date) - getDateValue(b.release_date);
+        return (
+          getReleaseDateTimestamp(a.release_date) -
+          getReleaseDateTimestamp(b.release_date)
+        );
       }
       return 0;
     });

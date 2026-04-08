@@ -5,8 +5,8 @@ function MovieCard({ movie, isFavorite, onToggleFavorite }) {
   const posterAltText = movie.title
     ? `${movie.title} poster`
     : movie.id
-      ? `Untitled movie poster (${movie.id})`
-      : "Untitled movie poster";
+      ? `Movie poster (ID: ${movie.id})`
+      : "Movie poster (no title available)";
 
   return (
     <div className={`card ${isFavorite ? "favorite" : ""}`}>
