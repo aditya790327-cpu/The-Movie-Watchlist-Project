@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import MovieCard from "../components/MovieCard";
 
@@ -40,49 +40,58 @@ function Home() {
     );
   };
 
-  const normalizedQuery = query.trim().toLowerCase();
-  const filteredMovies = movies
-    .filter((movie) => {
-      if (!normalizedQuery) return true;
-      const searchableText = `${movie.title ?? ""} ${movie.overview ?? ""}`.toLowerCase();
-      return searchableText.includes(normalizedQuery);
-    })
-    .filter((movie) => {
-      if (minRating === "all") return true;
-      const ratingValue = Number(movie.vote_average ?? 0);
-      return ratingValue >= Number(minRating);
-    });
+  const normalizedQuery = useMemo(
+    () => query.trim().toLowerCase(),
+    [query]
+  );
 
-  const visibleMovies =
-    sortOption === "default"
-      ? filteredMovies
-      : [...filteredMovies].sort((a, b) => {
-          if (sortOption === "rating-desc") {
-            return Number(b.vote_average ?? 0) - Number(a.vote_average ?? 0);
-          }
-          if (sortOption === "rating-asc") {
-            return Number(a.vote_average ?? 0) - Number(b.vote_average ?? 0);
-          }
-          if (sortOption === "title-asc") {
-            return (a.title ?? "").localeCompare(b.title ?? "");
-          }
-          if (sortOption === "title-desc") {
-            return (b.title ?? "").localeCompare(a.title ?? "");
-          }
-          if (sortOption === "date-desc") {
-            return (
-              Date.parse(b.release_date ?? "") -
-              Date.parse(a.release_date ?? "")
-            );
-          }
-          if (sortOption === "date-asc") {
-            return (
-              Date.parse(a.release_date ?? "") -
-              Date.parse(b.release_date ?? "")
-            );
-          }
-          return 0;
-        });
+  const filteredMovies = useMemo(() => {
+    return movies
+      .filter((movie) => {
+        if (!normalizedQuery) return true;
+        const searchableText =
+          `${movie.title ?? ""} ${movie.overview ?? ""}`.toLowerCase();
+        return searchableText.includes(normalizedQuery);
+      })
+      .filter((movie) => {
+        if (minRating === "all") return true;
+        const ratingValue = Number(movie.vote_average ?? 0);
+        return ratingValue >= Number(minRating);
+      });
+  }, [movies, normalizedQuery, minRating]);
+
+  const visibleMovies = useMemo(() => {
+    if (sortOption === "default") {
+      return filteredMovies;
+    }
+
+    const getDateValue = (value) => {
+      const parsed = Date.parse(value ?? "");
+      return Number.isNaN(parsed) ? 0 : parsed;
+    };
+
+    return [...filteredMovies].sort((a, b) => {
+      if (sortOption === "rating-desc") {
+        return Number(b.vote_average ?? 0) - Number(a.vote_average ?? 0);
+      }
+      if (sortOption === "rating-asc") {
+        return Number(a.vote_average ?? 0) - Number(b.vote_average ?? 0);
+      }
+      if (sortOption === "title-asc") {
+        return (a.title ?? "").localeCompare(b.title ?? "");
+      }
+      if (sortOption === "title-desc") {
+        return (b.title ?? "").localeCompare(a.title ?? "");
+      }
+      if (sortOption === "date-desc") {
+        return getDateValue(b.release_date) - getDateValue(a.release_date);
+      }
+      if (sortOption === "date-asc") {
+        return getDateValue(a.release_date) - getDateValue(b.release_date);
+      }
+      return 0;
+    });
+  }, [filteredMovies, sortOption]);
 
   return (
     <div className="app" data-theme={isDarkMode ? "dark" : "light"}>
