@@ -4,6 +4,11 @@ import MovieCard from "../components/MovieCard";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
+const getDateValue = (value) => {
+  const parsed = Date.parse(value ?? "");
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+
 function Home() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
@@ -64,11 +69,6 @@ function Home() {
     if (sortOption === "default") {
       return filteredMovies;
     }
-
-    const getDateValue = (value) => {
-      const parsed = Date.parse(value ?? "");
-      return Number.isNaN(parsed) ? 0 : parsed;
-    };
 
     return [...filteredMovies].sort((a, b) => {
       if (sortOption === "rating-desc") {
