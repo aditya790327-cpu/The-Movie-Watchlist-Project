@@ -7,6 +7,10 @@ function MovieCard({ movie, isFavorite, onToggleFavorite }) {
     : movie.id
       ? `Movie poster (ID: ${movie.id})`
       : "Movie poster (no title available)";
+  const ratingText =
+    movie.vote_average != null
+      ? Number(movie.vote_average).toFixed(1)
+      : "N/A";
 
   return (
     <div className={`card ${isFavorite ? "favorite" : ""}`}>
@@ -16,7 +20,7 @@ function MovieCard({ movie, isFavorite, onToggleFavorite }) {
         <div className="poster-placeholder">No poster</div>
       )}
       <h3>{movie.title}</h3>
-      <p>⭐ {movie.vote_average?.toFixed(1) ?? "N/A"}</p>
+      <p>⭐ {ratingText}</p>
       <p>{movie.release_date || "Release date unknown"}</p>
       <button
         className={`favorite-button ${isFavorite ? "active" : ""}`}
