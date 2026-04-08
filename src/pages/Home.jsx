@@ -63,7 +63,16 @@ function Home() {
   }
 
   const toggleDarkMode = () => {
-    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode') || 
+                   (window.matchMedia('(prefers-color-scheme: dark)').matches && !document.body.classList.contains('light-mode'));
+                   
+    if (isDark) {
+      document.body.classList.remove('dark-mode');
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+      document.body.classList.add('dark-mode');
+    }
   };
 
   return (
