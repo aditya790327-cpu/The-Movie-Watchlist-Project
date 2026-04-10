@@ -75,11 +75,19 @@ function Home() {
     }
   };
 
+  const isDark = () => {
+    if (typeof document === 'undefined') return false;
+    return document.body.classList.contains('dark-mode') || 
+           (window.matchMedia('(prefers-color-scheme: dark)').matches && !document.body.classList.contains('light-mode'));
+  };
+
   return (
     <div style={{ padding: "0 20px" }}>
       <div className="header-top">
-        <h1>🎬 Movie Explorer</h1>
-        <button className="theme-toggle" onClick={toggleDarkMode}>🌓 Toggle Theme</button>
+        <h1><span className="emoji">🎬</span> Movie Explorer</h1>
+        <button className="theme-toggle" onClick={toggleDarkMode}>
+          {isDark() ? "☀️" : "🌙"} {isDark() ? "Light Mode" : "Dark Mode"}
+        </button>
       </div>
 
       <div className="controls-container">
@@ -87,22 +95,42 @@ function Home() {
 
         <select className="select-input" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
           <option value="">Sort By...</option>
-          <option value="asc">A-Z</option>
-          <option value="desc">Z-A</option>
-          <option value="rating">Top Rated</option>
+          <option value="asc">A → Z</option>
+          <option value="desc">Z → A</option>
+          <option value="rating">⭐ Top Rated</option>
         </select>
 
         <select className="select-input" value={filterRating} onChange={(e) => setFilterRating(Number(e.target.value))}>
           <option value="0">All Ratings</option>
-          <option value="7">7+ Stars / 10</option>
-          <option value="8">8+ Stars / 10</option>
+          <option value="7">7+ Stars</option>
+          <option value="8">8+ Stars</option>
         </select>
       </div>
 
-      {loading && <p>Loading massive blockbusters...</p>}
+      {loading && (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Discovering movies...</p>
+        </div>
+      )}
 
       {!loading && displayedMovies.length === 0 && (
-        <p>No movies matched your current filters. Try searching for something else!</p>
+        <div className="empty-state">
+          <div className="empty-state-icon">🎭</div>
+          <p className="empty-state-title">No movies found</p>
+          <p className="empty-state-subtitle">Try adjusting your search or filters to discover more movies.</p>
+        </div>
+      )}
+
+      {!loading && displayedMovies.length > 0 && (
+        <div className="results-bar">
+          <span className="results-count">
+            Showing <strong>{displayedMovies.length}</strong> {displayedMovies.length === 1 ? 'movie' : 'movies'}
+          </span>
+          <span className="section-label">
+            {searchQuery ? 'Search Results' : 'Popular Now'}
+          </span>
+        </div>
       )}
 
       <div className="grid">
@@ -110,6 +138,10 @@ function Home() {
           <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
+
+      <footer className="footer">
+        <p>Powered by <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">TMDB API</a> • Built with React + Vite</p>
+      </footer>
     </div>
   );
 }
